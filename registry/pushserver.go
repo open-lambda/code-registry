@@ -76,7 +76,7 @@ func (s *PushServer) Run() {
 }
 
 // TODO add authKey argument to creating the session
-func InitPushServer(cluster []string, db string, proc FileProcessor, port, chunksize int) *PushServer {
+func InitPushServer(cluster []string, db string, proc FileProcessor, port, chunksize int, tables ...string) *PushServer {
 	s := new(PushServer)
 
 	session, err := r.Connect(r.ConnectOpts{
@@ -86,8 +86,9 @@ func InitPushServer(cluster []string, db string, proc FileProcessor, port, chunk
 	grpcCheck(err)
 
 	_, _ = r.DBCreate(db).RunWrite(session)
-	_, _ = r.TableCreate(BALANCER).RunWrite(session)
-	_, _ = r.TableCreate(SERVER).RunWrite(session)
+	for _, table := range tables {
+		_, _ = r.TableCreate(table).RunWrite(session)
+	}
 
 	s.Conn = session
 	s.Port = port
