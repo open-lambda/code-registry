@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	r "github.com/open-lambda/load-balancer/balancer/registry"
+	r "github.com/open-lambda/code-registry/registry"
 )
 
 const (
@@ -20,5 +20,7 @@ const (
 func main() {
 	pushc := r.InitPushClient(SERVER_ADDR, CHUNK_SIZE)
 	fmt.Println("Pushing from client...")
-	pushc.Push(NAME, PROTO_PUSH, HANDLER_PUSH)
+	proto := r.File{Name: PROTO_PUSH, Type: r.PROTO}
+	handler := r.File{Name: HANDLER_PUSH, Type: r.HANDLER}
+	pushc.Push(NAME, proto, handler)
 }

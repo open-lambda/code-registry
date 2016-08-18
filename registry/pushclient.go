@@ -11,8 +11,8 @@ import (
 	pb "github.com/open-lambda/load-balancer/balancer/registry/regproto"
 )
 
-func (c *PushClient) sendFile(stream pb.Registry_PushClient, name, filetype, file string) {
-	data, err := ioutil.ReadFile(file)
+func (c *PushClient) sendFile(stream pb.Registry_PushClient, name string, file PushClientFile) {
+	data, err := ioutil.ReadFile(file.Name)
 	grpcCheck(err)
 	/*
 		n := bytes.IndexByte(data, 0)
@@ -30,8 +30,8 @@ func (c *PushClient) sendFile(stream pb.Registry_PushClient, name, filetype, fil
 
 		err = stream.Send(&pb.Chunk{
 			Name:     name,
-			Data:     chunk,
-			FileType: filetype,
+			Data:     chunk[:n],
+			FileType: file.Type,
 		})
 		grpcCheck(err)
 	}
@@ -39,13 +39,13 @@ func (c *PushClient) sendFile(stream pb.Registry_PushClient, name, filetype, fil
 	return
 }
 
-func (c *PushClient) Push(name, proto, handler string) {
+func (c *PushClient) Push(name string, files ...PushClientFile) {
 	stream, err := c.Conn.Push(context.Background())
 	grpcCheck(err)
 
-	c.sendFile(stream, name, PROTO, proto)
-
-	c.sendFile(stream, name, HANDLER, handler)
+	for _, file := range files {
+		c.sendFile(stream, name, file)
+	}
 
 	_, err = stream.CloseAndRecv()
 	grpcCheck(err)

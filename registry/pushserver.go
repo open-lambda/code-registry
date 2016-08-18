@@ -5,7 +5,6 @@ import (
 	"io"
 	"net"
 
-	"github.com/open-lambda/load-balancer/balancer/inspect/codegen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 
@@ -13,41 +12,25 @@ import (
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-func generateParser(proto []byte) ([]byte, error) {
-	return []byte("Fake parser code"), nil
-}
-
-func (s *PushServer) ProcessAndStore(name string, proto, handler []byte) error {
-	pb, err := codegen.Generate(proto, name)
-	grpcCheck(err)
-
-	sfiles := map[string]interface{}{
-		"id":      name,
-		"handler": handler,
-		"pb":      pb,
-	}
-
-	parser, err := generateParser(proto)
-
-	lbfiles := map[string]interface{}{
-		"id":     name,
-		"parser": parser,
+func (s *PushServer) processAndStore(name string, files map[string][]byte) error {
+	procfiles, err := s.Processor.Process(name, files)
+	if err != nil {
+		return err
 	}
 
 	opts := r.InsertOpts{Conflict: "replace"}
-
-	_, err = r.Table(SERVER).Insert(&sfiles, opts).RunWrite(s.Conn)
-	grpcCheck(err)
-
-	_, err = r.Table(BALANCER).Insert(&lbfiles, opts).RunWrite(s.Conn)
-	grpcCheck(err)
+	for _, file := range procfiles {
+		_, err := r.Table(file.Table).Insert(file.Data, opts).RunWrite(s.Conn)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
 
 func (s *PushServer) Push(stream pb.Registry_PushServer) error {
-	proto := make([]byte, 0)
-	handler := make([]byte, 0)
+	files := make(map[string][]byte)
 	name := ""
 
 	for {
@@ -57,7 +40,7 @@ func (s *PushServer) Push(stream pb.Registry_PushServer) error {
 				grpclog.Fatal("Empty push request or name field")
 			}
 
-			err = s.ProcessAndStore(name, proto, handler)
+			err = s.processAndStore(name, files)
 			if err != nil {
 				return err
 			}
@@ -67,11 +50,11 @@ func (s *PushServer) Push(stream pb.Registry_PushServer) error {
 			})
 		}
 
-		switch chunk.FileType {
-		case PROTO:
-			proto = append(proto, chunk.Data...)
-		case HANDLER:
-			handler = append(handler, chunk.Data...)
+		ftype := chunk.FileType
+		if val, ok := files[ftype]; ok {
+			files[ftype] = append(val, chunk.Data...)
+		} else {
+			files[ftype] = chunk.Data
 		}
 
 		name = chunk.Name
@@ -93,8 +76,7 @@ func (s *PushServer) Run() {
 }
 
 // TODO add authKey argument to creating the session
-// TODO don't create the database every time?
-func InitPushServer(cluster []string, db string, port, chunksize int) *PushServer {
+func InitPushServer(cluster []string, db string, proc FileProcessor, port, chunksize int) *PushServer {
 	s := new(PushServer)
 
 	session, err := r.Connect(r.ConnectOpts{
@@ -102,16 +84,15 @@ func InitPushServer(cluster []string, db string, port, chunksize int) *PushServe
 		Database:  db,
 	})
 	grpcCheck(err)
-	/*
-		_, err = r.TableCreate(BALANCER).RunWrite(session)
-		grpcCheck(err)
 
-		_, err = r.TableCreate(SERVER).RunWrite(session)
-		grpcCheck(err)
-	*/
+	_, _ = r.DBCreate(db).RunWrite(session)
+	_, _ = r.TableCreate(BALANCER).RunWrite(session)
+	_, _ = r.TableCreate(SERVER).RunWrite(session)
+
 	s.Conn = session
 	s.Port = port
 	s.ChunkSize = chunksize
+	s.Processor = proc
 
 	return s
 }

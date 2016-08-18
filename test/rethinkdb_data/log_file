@@ -1,0 +1,23 @@
+2016-08-17T22:58:39.193659027 0.092507s notice: Recursively removing directory /root/go/src/github.com/open-lambda/code-registry/test/rethinkdb_data/tmp
+2016-08-17T22:58:39.198599365 0.097445s notice: Initializing directory /root/go/src/github.com/open-lambda/code-registry/test/rethinkdb_data
+2016-08-17T22:58:39.198893403 0.097739s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/root/go/src/github.com/open-lambda/code-registry/test/rethinkdb_data' did not already exist or is empty.)
+2016-08-17T22:58:39.198984868 0.097831s notice: Running rethinkdb 2.3.4~0xenial (GCC 5.3.1)...
+2016-08-17T22:58:39.202624223 0.101472s notice: Running on Linux 4.4.0-31-generic x86_64
+2016-08-17T22:58:39.202765909 0.101611s notice: Loading data from directory /root/go/src/github.com/open-lambda/code-registry/test/rethinkdb_data
+2016-08-17T22:58:39.240758635 0.139606s info: Automatically using cache size of 100 MB
+2016-08-17T22:58:39.241638386 0.140485s warn: Cache size does not leave much memory for server and query overhead (available memory: 337 MB).
+2016-08-17T22:58:39.241657792 0.140504s warn: Cache size is very low and may impact performance.
+2016-08-17T22:58:39.244421079 0.143267s notice: Listening for intracluster connections on port 29015
+2016-08-17T22:58:39.252069958 0.150916s notice: Listening for client driver connections on port 28015
+2016-08-17T22:58:39.252645632 0.151491s notice: Listening for administrative HTTP connections on port 8080
+2016-08-17T22:58:39.252650336 0.151495s notice: Listening on cluster addresses: 127.0.0.1, 127.0.1.1, ::1
+2016-08-17T22:58:39.252656616 0.151502s notice: Listening on driver addresses: 127.0.0.1, 127.0.1.1, ::1
+2016-08-17T22:58:39.252659872 0.151505s notice: Listening on http addresses: 127.0.0.1, 127.0.1.1, ::1
+2016-08-17T22:58:39.252664381 0.151509s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-08-17T22:58:39.252669197 0.151514s notice: Server ready, "open_lambda_rev" 3db2c3cc-bb38-40b2-954b-d4980dc3d703
+2016-08-17T23:25:59.966125539 1640.864973s info: Table e4f338e0-e53e-4e99-a04e-08fa062bee10: Starting a new Raft election for term 1.
+2016-08-17T23:25:59.969343949 1640.868190s info: Table e4f338e0-e53e-4e99-a04e-08fa062bee10: Added replica on this server.
+2016-08-17T23:25:59.970883225 1640.869730s info: Table e4f338e0-e53e-4e99-a04e-08fa062bee10: This server is Raft leader for term 1. Latest log index is 0.
+2016-08-17T23:26:00.275642054 1641.174489s info: Table 1fb9e3c1-d922-4bb4-adbb-b67ba5072677: Starting a new Raft election for term 1.
+2016-08-17T23:26:00.276646141 1641.175492s info: Table 1fb9e3c1-d922-4bb4-adbb-b67ba5072677: Added replica on this server.
+2016-08-17T23:26:00.277827074 1641.176673s info: Table 1fb9e3c1-d922-4bb4-adbb-b67ba5072677: This server is Raft leader for term 1. Latest log index is 0.

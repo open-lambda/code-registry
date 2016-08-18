@@ -21,26 +21,32 @@ type PushClient struct {
 	Conn       pb.RegistryClient
 }
 
+type PushClientFile struct {
+	Name string
+	Type string
+}
+
 type PushServer struct {
 	Port      int
 	ChunkSize int
 	Conn      *r.Session // sessions are thread safe?
+	Processor FileProcessor
+}
+
+// files: map of filetype -> file
+type FileProcessor interface {
+	Process(name string, files map[string][]byte) ([]DBInsert, error)
+}
+
+type DBInsert struct {
+	Table string
+	Data  *map[string]interface{}
 }
 
 type PullClient struct {
-	Type string
-	Conn *r.Session
-}
-
-type ServerFiles struct {
-	Name    string `gorethink:"id,omitempty"`
-	Handler []byte `gorethink:"handler"`
-	PB      []byte `gorethink:"pb"`
-}
-
-type BalancerFiles struct {
-	Name   string `gorethink:"id,omitempty"`
-	Parser []byte `gorethink:"parser"`
+	Type  string
+	Conn  *r.Session
+	Table string
 }
 
 func grpcCheck(err error) {
