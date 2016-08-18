@@ -65,7 +65,7 @@ func (p LBFileProcessor) Process(name string, files map[string][]byte) ([]r.DBIn
 func main() {
 	CLUSTER := []string{"127.0.0.1:28015"}
 	proc := LBFileProcessor{}
-	pushs := r.InitPushServer(CLUSTER, DATABASE, proc, SERVER_PORT, CHUNK_SIZE)
+	pushs := r.InitPushServer(CLUSTER, DATABASE, proc, SERVER_PORT, CHUNK_SIZE, SERVER, BALANCER)
 	fmt.Println("Running pushserver...")
 	pushs.Run()
 }
