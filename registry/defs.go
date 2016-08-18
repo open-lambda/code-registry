@@ -4,7 +4,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 
-	pb "github.com/open-lambda/load-balancer/balancer/registry/regproto"
+	pb "github.com/open-lambda/code-registry/registry/regproto"
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 

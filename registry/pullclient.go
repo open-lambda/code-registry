@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"bytes"
 	"log"
 
 	r "gopkg.in/dancannon/gorethink.v2"

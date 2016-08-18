@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	pb "github.com/open-lambda/load-balancer/balancer/registry/regproto"
+	pb "github.com/open-lambda/code-registry/registry/regproto"
 )
 
 func (c *PushClient) sendFile(stream pb.Registry_PushClient, name string, file PushClientFile) {
