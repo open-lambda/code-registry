@@ -8,13 +8,6 @@ import (
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
-const (
-	PROTO    = "proto"
-	HANDLER  = "handler"
-	SERVER   = "server"
-	BALANCER = "balancer"
-)
-
 type PushClient struct {
 	ServerAddr string
 	ChunkSize  int
